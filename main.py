@@ -1,5 +1,5 @@
 import pandas as pd
-import numpy as np
+import matplotlib.pyplot as plt
 
 def gradient_descent(x1: list[float], 
                      x2: list[float], 
@@ -14,10 +14,15 @@ def gradient_descent(x1: list[float],
     n = len(x1)
     epochs = 10000
     learning_rate = 0.0001
+    costs = []
 
     for _ in range(epochs):
+        # Calculate Loss
         y_predicted = w1*x1 + w2*x2 + w3*x3 + w4*x4 + w5*x5 + w6*x6 + w7*x7 + w0
         cost =  (1/n) * sum([val**2 for val in (y-y_predicted)])
+        costs.append(cost)
+
+        # Calculate Gradient
         grad_1 = -(2/n)*sum(x1*(y-y_predicted))
         grad_2 = -(2/n)*sum(x2*(y-y_predicted))
         grad_3 = -(2/n)*sum(x3*(y-y_predicted))
@@ -27,6 +32,7 @@ def gradient_descent(x1: list[float],
         grad_7 = -(2/n)*sum(x7*(y-y_predicted))
         grad_8 = -(2/n)*sum(y-y_predicted)
 
+        # Update weights
         w1 = w1 - learning_rate * grad_1
         w2 = w2 - learning_rate * grad_2
         w3 = w3 - learning_rate * grad_3
@@ -36,7 +42,24 @@ def gradient_descent(x1: list[float],
         w7 = w7 - learning_rate * grad_7
         w0 = w0 - learning_rate * grad_8
         
-        print(cost)
+    # Plot Loss
+    plt.title("Loss/Epoch")
+    plt.xlabel("epoch")
+    plt.ylabel("loss")
+    plt.plot(range(1, epochs+1), costs, linewidth=1)
+    plt.show()
+
+    # Plot Predicted Results
+
+    plt.title("Probability")
+    plt.xlabel("n")
+    plt.ylabel("chance")
+    plt.scatter(x=range(1, 10), y=y[0:9], label="y")
+    plt.scatter(x=range(1, 10), y=y_predicted[0:9], label="y_predicted")
+    plt.legend()
+    plt.show()
+
+        
 
 
 """
@@ -50,7 +73,7 @@ def gradient_descent(x1: list[float],
 """
 
 def clean_data(df: pd.DataFrame):
-    # Rename Column
+    # Rename Columns
     df.rename(columns={
         "LOR ": "LOR", 
         "Chance of Admit ": "Chance of Admit"}, inplace=True)
